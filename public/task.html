@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <meta content='IE=edge' http-equiv='X-UA-Compatible' />
+  <meta content='width=device-width, initial-scale=1.0' name='viewport' />
+  <!-- favicon -->
+  <link href='./favicon.ico' rel='shortcut icon' type='image/x-icon' />
+  <!-- normalize -->
+  <link href='./normalize.css' rel='stylesheet' />
+  <!-- main  -->
+  <link href='./main.css' rel='stylesheet' />
+
+  <title>Edit Task</title>
+</head>
+<body>
+<div class='container'>
+  <form class='single-task-form'>
+    <h4>Edit Task</h4>
+    <div class='form-control'>
+      <label>Task ID</label>
+      <p class='task-edit-id'></p>
+    </div>
+    <div class='form-control'>
+      <label for='name'>Name</label>
+      <input class='task-edit-name' id='name' name='name' type='text' />
+    </div>
+    <div class='form-control'>
+      <label for='completed'>completed</label>
+      <input class='task-edit-completed' id='completed' name='completed' type='checkbox' />
+    </div>
+    <button class='block btn task-edit-btn' type='submit'>edit</button>
+    <div class='form-alert'></div>
+  </form>
+  <a class='btn back-link' href='index.html'>back to tasks</a>
+</div>
+<!-- axios -->
+<script
+  crossorigin='anonymous'
+  integrity='sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=='
+  referrerpolicy='no-referrer'
+  src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js'
+></script>
+<!-- js -->
+<script src='./edit-task.js'></script>
+</body>
+</html>
