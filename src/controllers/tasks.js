@@ -47,8 +47,26 @@ const getTask = async (req, res) => {
   }
 };
 
-const updateTask = (req, res) => {
-  res.status(200).send('update task');
+const updateTask = async (req, res) => {
+  try {
+    const { id: taskId } = req.params;
+    // "findOneAndUpdate" is an interesting query because it has several gotchas by default:
+    // - it resolves to a PREVIOUS (before update) version of the document;
+    // - it DOES NOT VALIDATE data that we are using when updating.
+    // To fix this behavior we just need to pass a 3rd argument (which is "options"):
+    const task = await Task.findOneAndUpdate({ _id: taskId }, req.body, {
+      new: true, // fix resolved value
+      runValidators: true, // enable validation
+    });
+
+    if (!task) {
+      return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    }
+
+    return res.status(200).json({ task });
+  } catch (err) {
+    return res.status(500).json({ msg: err });
+  }
 };
 
 const deleteTask = async (req, res) => {
