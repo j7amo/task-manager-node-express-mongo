@@ -57,6 +57,7 @@ const updateTask = async (req, res) => {
     const task = await Task.findOneAndUpdate({ _id: taskId }, req.body, {
       new: true, // fix resolved value
       runValidators: true, // enable validation
+      // overwrite: true // use ONLY if we want to completely overwrite the document
     });
 
     if (!task) {

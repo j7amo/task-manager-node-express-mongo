@@ -9,7 +9,7 @@ const connectDB = require('./db/connect');
 // adding our own defined ENV variables to "process.env" (which is available by default)
 require('dotenv').config();
 
-// app.use(express.static('./public'));
+app.use(express.static('./public'));
 app.use(express.json());
 // use our own router to manage requests to "/api/v1/tasks"
 app.use('/api/v1/tasks', tasksRouter);
