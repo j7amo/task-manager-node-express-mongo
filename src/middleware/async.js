@@ -7,6 +7,9 @@ const asyncWrapper = (controller) => async (req, res, next) => {
   try {
     await controller(req, res, next);
   } catch (err) {
+    // we pass error (if there is one) to the next middleware
+    // AND it will be handled by DEFAULT MIDDLEWARE for error handling
+    // which comes built-in into Express and added to VERY END of middleware chain by default!
     next(err);
   }
 };
