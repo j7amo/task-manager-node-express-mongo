@@ -8,11 +8,14 @@ const connectDB = require('./db/connect');
 // In order to do it we just require(in fact execute) DOTENV package which results in
 // adding our own defined ENV variables to "process.env" (which is available by default)
 require('dotenv').config();
+const notFound = require('./middleware/not-found');
 
 app.use(express.static('./public'));
 app.use(express.json());
 // use our own router to manage requests to "/api/v1/tasks"
 app.use('/api/v1/tasks', tasksRouter);
+// here we use our own middleware to do something in case there is no matching resource:
+app.use(notFound);
 
 const startApp = async () => {
   try {
