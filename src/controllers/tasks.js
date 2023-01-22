@@ -51,8 +51,23 @@ const updateTask = (req, res) => {
   res.status(200).send('update task');
 };
 
-const deleteTask = (req, res) => {
-  res.status(200).send('delete task');
+const deleteTask = async (req, res) => {
+  try {
+    const { id: taskId } = req.params;
+    const task = await Task.findOneAndDelete({ _id: taskId });
+
+    if (!task) {
+      return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    }
+
+    // when it comes to sending back data after request was handled there are numerous ways
+    // of doing it:
+    return res.status(200).json({ task });
+    // return res.status(200).json({ task: null, status: 'success' });
+    // return res.status(200).send();
+  } catch (err) {
+    return res.status(500).json({ msg: err });
+  }
 };
 
 module.exports = {
