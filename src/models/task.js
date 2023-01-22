@@ -5,24 +5,40 @@ const mongoose = require('mongoose');
 // of the documents(database records) within that collection.
 
 // here we define Schema(description of the structure/shape) for a Task object:
+// const TaskSchema = new mongoose.Schema({
+//   // Each key in "TaskSchema" defines a property in our documents
+//   // which will be cast to its associated SchemaType (e.g. property "name"
+//   // will be cast to "String" type). This structure also helps us CONTROL
+//   // WHAT IS ADDED TO DB.
+//   // This basically means 2 things:
+//   // 1) ONLY those PROPERTIES that are DEFINED IN the SCHEMA will be added
+//   // to DB(e.g. we decide to add a record to the DB with such props:
+//   // { "name": "bla bla bla", "completed": true, "date": new Date() } and as a result "date"
+//   // WILL NOT BE ADDED!)
+//   // 2) if the provided value is incorrect(i.e. that it CAN NOT BE CAST to specified SchemaType)
+//   // then VALIDATION will FAIL and the record/document WILL NOT BE ADDED TO DB(e.g. we try to add
+//   // { "name": "bla bla bla", "completed": "completed" } and in this case "completed"
+//   // can not be cast to a "Boolean". In order for it to be cast to Boolean it can only have
+//   // values like "true", true, "false", false ). But this validation is very-very basic which
+//   // means that out-of-the-box it DOES NOT CARE validating empty values for example...
+//   name: String,
+//   completed: Boolean,
+// });
+
+// The previous Schema is very basic and almost has no validation, so we'll
+// set it up more elaborate way:
 const TaskSchema = new mongoose.Schema({
-  // Each key in "TaskSchema" defines a property in our documents
-  // which will be cast to its associated SchemaType (e.g. property "name"
-  // will be cast to "String" type). This structure also helps us CONTROL
-  // WHAT IS ADDED TO DB.
-  // This basically means 2 things:
-  // 1) ONLY those PROPERTIES that are DEFINED IN the SCHEMA will be added
-  // to DB(e.g. we decide to add a record to the DB with such props:
-  // { "name": "bla bla bla", "completed": true, "date": new Date() } and as a result "date"
-  // WILL NOT BE ADDED!)
-  // 2) if the provided value is incorrect(i.e. that it CAN NOT BE CAST to specified SchemaType)
-  // then VALIDATION will FAIL and the record/document WILL NOT BE ADDED TO DB(e.g. we try to add
-  // { "name": "bla bla bla", "completed": "completed" } and in this case "completed"
-  // can not be cast to a "Boolean". In order for it to be cast to Boolean it can only have
-  // values like "true", true, "false", false ). But this validation is very-very basic which
-  // means that out-of-the-box it DOES NOT CARE validating empty values for example...
-  name: String,
-  completed: Boolean,
+  name: {
+    type: String,
+    required: [true, 'must provide name!'],
+    trim: true,
+    minlength: [1, 'name cannot be less than 1 character'],
+    maxlength: [20, 'name cannot be more than 20 characters'],
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // To use our schema definition, we need to convert our "TaskSchema"
