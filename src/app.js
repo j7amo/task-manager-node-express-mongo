@@ -1,7 +1,10 @@
 const express = require('express');
 
 const app = express();
-const port = 3000;
+// if we deploy our app then it is highly likely that PORT value will be dynamic,
+// so the common practice is to first try and get the value from the "process.env.PORT"
+// and if there is no value then use some fallback value:
+const PORT = process.env.PORT || 3000;
 const tasksRouter = require('./routes/tasks');
 const connectDB = require('./db/connect');
 // after we moved secret to ".env" file, we need to somehow access it.
@@ -27,7 +30,7 @@ const startApp = async () => {
     await connectDB(process.env.MONGO_URI);
     console.log('CONNECTED TO DATABASE');
     // and only IF we are SUCCESSFUL we start the server
-    app.listen(port, () => console.log(`server is running on port ${port}...`));
+    app.listen(PORT, () => console.log(`server is running on port ${PORT}...`));
   } catch (err) {
     console.log(err);
   }
