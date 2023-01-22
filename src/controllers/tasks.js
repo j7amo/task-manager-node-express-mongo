@@ -28,8 +28,23 @@ const createTask = async (req, res) => {
   }
 };
 
-const getTask = (req, res) => {
-  res.status(200).json({ id: req.params.id });
+const getTask = async (req, res) => {
+  try {
+    const { id: taskId } = req.params;
+    // here we use another Model query - "findOne"
+    const task = await Task.findOne({ _id: taskId });
+
+    // this condition is to distinguish cases:
+    // 1) user provided ID of correct format but no task with matching ID was found then it is 404;
+    if (!task) {
+      return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    }
+
+    return res.status(200).json({ task });
+  } catch (err) {
+    // 2) user provided ID of incorrect format and no task was found then it is 500 (or 400 maybe?);
+    return res.status(500).json({ msg: err });
+  }
 };
 
 const updateTask = (req, res) => {
