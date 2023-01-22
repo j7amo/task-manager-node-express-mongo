@@ -1,5 +1,6 @@
 const Task = require('../models/task');
 const asyncWrapper = require('../middleware/async');
+const { createCustomError } = require('../errors/custom-error');
 
 const getAllTasks = asyncWrapper(async (req, res) => {
   // IMPORTANT!!! Technically Models QUERIES DOES NOT RETURN Promise
@@ -26,7 +27,7 @@ const createTask = asyncWrapper(async (req, res) => {
   return res.status(201).json({ task });
 });
 
-const getTask = asyncWrapper(async (req, res) => {
+const getTask = asyncWrapper(async (req, res, next) => {
   const { id: taskId } = req.params;
   // here we use another Model query - "findOne"
   const task = await Task.findOne({ _id: taskId });
@@ -34,13 +35,18 @@ const getTask = asyncWrapper(async (req, res) => {
   // this condition is to distinguish cases:
   // 1) user provided ID of correct format but no task with matching ID was found then it is 404;
   if (!task) {
-    return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    // return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    // now when we have our own error handling middleware in place, we can just
+    // (1)CREATE an error in a controller AND (2) PASS it to the next middleware (all
+    // the way to custom error handling one which is at the end of middleware chain), so we
+    // don't have to deal with it right now and repeat ourselves:
+    return next(createCustomError(`No task with id ${taskId} found`, 404));
   }
 
   return res.status(200).json({ task });
 });
 
-const updateTask = asyncWrapper(async (req, res) => {
+const updateTask = asyncWrapper(async (req, res, next) => {
   const { id: taskId } = req.params;
   // "findOneAndUpdate" is an interesting query because it has several gotchas by default:
   // - it resolves to a PREVIOUS (before update) version of the document;
@@ -53,18 +59,20 @@ const updateTask = asyncWrapper(async (req, res) => {
   });
 
   if (!task) {
-    return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    // return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    return next(createCustomError(`No task with id ${taskId} found`, 404));
   }
 
   return res.status(200).json({ task });
 });
 
-const deleteTask = asyncWrapper(async (req, res) => {
+const deleteTask = asyncWrapper(async (req, res, next) => {
   const { id: taskId } = req.params;
   const task = await Task.findOneAndDelete({ _id: taskId });
 
   if (!task) {
-    return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    // return res.status(404).json({ msg: `No task with id ${taskId} found` });
+    return next(createCustomError(`No task with id ${taskId} found`, 404));
   }
 
   // when it comes to sending back data after request was handled there are numerous ways

@@ -9,6 +9,7 @@ const connectDB = require('./db/connect');
 // adding our own defined ENV variables to "process.env" (which is available by default)
 require('dotenv').config();
 const notFound = require('./middleware/not-found');
+const errorHandler = require('./middleware/error-handlers');
 
 app.use(express.static('./public'));
 app.use(express.json());
@@ -16,6 +17,9 @@ app.use(express.json());
 app.use('/api/v1/tasks', tasksRouter);
 // here we use our own middleware to do something in case there is no matching resource:
 app.use(notFound);
+// middleware that handles errors should be placed at the end of the middleware chain
+// OR if we have something like "app.get" - after it
+app.use(errorHandler);
 
 const startApp = async () => {
   try {
